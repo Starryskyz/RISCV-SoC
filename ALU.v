@@ -7,6 +7,14 @@ module ALU(
     input wire [3:0] AluType,
     output reg [31:0] AluOut
     );
+    
+    wire [63:0] Product;
+    booth_multiplier u_booth_multiplier(
+    .a(Operand1),
+    .b(Operand2),
+    .product(Product)
+    );
+    
 	always@(*)
 		case (AluType)
 			`ADD: AluOut = Operand1 + Operand2;
@@ -26,6 +34,10 @@ module ALU(
 			`SRA: AluOut = $signed(Operand1) >>> Operand2[4:0];
 			//使用>>>为算术右移，高位补符号，无符号数也仍是逻辑右移
 			`LUI: AluOut = Operand2;
+			`MUL: AluOut = Product[31:0];
+			`MULH: AluOut = Product[63:32];
+			`MULHSU: AluOut = Product[63:32];
+			`MULHU: AluOut = Product[63:32];
 			default: AluOut = 32'h0;
 		endcase
 endmodule
