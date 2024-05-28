@@ -83,8 +83,6 @@ module riscv_kernel#(
     wire [1:0] Forward1E;
     wire [1:0] Forward2E;
     wire [1:0] LoadedBytesSelect;
-    wire [7:0] chicken_bcd;
-    wire [7:0] rabbit_bcd;
 /*
     Crossover(
     .clk_in(clk_in),
