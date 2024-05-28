@@ -24,6 +24,10 @@
     `define SUB  4'b1000
     `define SRA  4'b1101
     `define LUI  4'b1010
+    `define MUL  4'b1011
+    `define MULH  4'b1100
+    `define MULHSU  4'b1100
+    `define MULHU  4'b1100
 //BranchType[2:0]
     `define NOBRANCH  3'b000
     `define BEQ  3'b110

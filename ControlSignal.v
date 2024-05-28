@@ -49,7 +49,7 @@ module ControlSignal(
 			default:    ImmType = 3'b000;
 		endcase
 		case(Opcode) 
-			`OP_RegReg: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0100000 ? 4'b1000 : 4'b0000);//后面对SUB和SRA指令判断
+			`OP_RegReg: AluTypeD = {1'b0 ,Funct3} + Funct7 == 7'b0000001 ? 4'b1011 : (Funct7 == 7'b0100000 ? 4'b1000 : 4'b0000);//后面对SUB和SRA指令判断
 			`OP_RegImm: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0100000 && Funct3 == 3'b101 ? 4'b1000 : 4'b0000);//后面对SRAI指令判断
 			`OP_LUI:    AluTypeD = `LUI;
 			default:    AluTypeD = `ADD;
