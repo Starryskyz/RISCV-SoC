@@ -1,2 +1,0 @@
-# RISCV-SoC
-FPGA 2024 WC

@@ -2,15 +2,15 @@
 `define CONST_VALUES
 
 //OPcode[6:0]
-    `define OP_JAL    7'b1101111 //JALµÄ²Ù×÷Âë
-    `define OP_JALR   7'b1100111 //JALRµÄ²Ù×÷Âë
-    `define OP_Load   7'b0000011 //LoadÀàÖ¸ÁîµÄ²Ù×÷Âë
-    `define OP_Store  7'b0100011 //StoreÀàÖ¸ÁîµÄ²Ù×÷Âë
-    `define OP_Branch 7'b1100011 //BranchÀàÖ¸ÁîµÄ²Ù×÷Âë
-    `define OP_LUI    7'b0110111 //LUIµÄ²Ù×÷Âë
-    `define OP_AUIPC  7'b0010111 //AUIPCµÄ²Ù×÷Âë
-    `define OP_RegReg 7'b0110011 //¼Ä´æÆ÷-¼Ä´æÆ÷ËãÊõÖ¸ÁîµÄ²Ù×÷Âë
-    `define OP_RegImm 7'b0010011 //¼Ä´æÆ÷-Á¢¼´ÊýËãÊõÖ¸ÁîµÄ²Ù×÷Âë
+    `define OP_JAL    7'b1101111 //JALï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½
+    `define OP_JALR   7'b1100111 //JALRï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½
+    `define OP_Load   7'b0000011 //Loadï¿½ï¿½Ö¸ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½
+    `define OP_Store  7'b0100011 //Storeï¿½ï¿½Ö¸ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½
+    `define OP_Branch 7'b1100011 //Branchï¿½ï¿½Ö¸ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½
+    `define OP_LUI    7'b0110111 //LUIï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½
+    `define OP_AUIPC  7'b0010111 //AUIPCï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½
+    `define OP_RegReg 7'b0110011 //ï¿½Ä´ï¿½ï¿½ï¿½-ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½
+    `define OP_RegImm 7'b0010011 //ï¿½Ä´ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½
 
 //ALUContrl[3:0]
     `define ADD  4'b0000

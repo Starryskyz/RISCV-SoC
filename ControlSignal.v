@@ -1,21 +1,21 @@
 `include "Parameters.v"  
-//Ö¸ÁîÒëÂë
+//Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 module ControlSignal(
-    input wire [6:0] Opcode,//Ö¸ÁîµÄ²Ù×÷Âë²¿·Ö
-    input wire [2:0] Funct3,//Ö¸ÁîµÄfunct3²¿·Ö
-    input wire [6:0] Funct7,//Ö¸ÁîµÄfunct7²¿·Ö
-    output reg JalD,//Îª1±íÊ¾µ±Ç°ÒëÂëÎªjalÖ¸Áî
-    output reg JalrD,//Îª1±íÊ¾µ±Ç°ÒëÂëÎªjalrÖ¸Áî
+    input wire [6:0] Opcode,//Ö¸ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ë²¿ï¿½ï¿½
+    input wire [2:0] Funct3,//Ö¸ï¿½ï¿½ï¿½funct3ï¿½ï¿½ï¿½ï¿½
+    input wire [6:0] Funct7,//Ö¸ï¿½ï¿½ï¿½funct7ï¿½ï¿½ï¿½ï¿½
+    output reg JalD,//Îª1ï¿½ï¿½Ê¾ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ÎªjalÖ¸ï¿½ï¿½
+    output reg JalrD,//Îª1ï¿½ï¿½Ê¾ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ÎªjalrÖ¸ï¿½ï¿½
     output reg [2:0] RegWriteD,
-    output reg MemToRegD,//±íÊ¾Ö¸ÁîÐèÒª½«data memory¶ÁÈ¡µÄÖµÐ´Èë¼Ä´æÆ÷
-    output reg [3:0] MemWriteD,//¶ÔÓÚdata memoryµÄ32bit×Ö°´byte½øÐÐÐ´Èë
-    output reg LoadNpcD,//±íÊ¾Òª½«NextPCÊä³öµ½ResultM
-    output reg [1:0] RegReadD,//ÓÃÓÚforwardµÄ´¦Àí
-    output reg [2:0] BranchTypeD,//·ÖÖ§ÀàÐÍ
-    output reg [3:0] AluTypeD,//ALUÔËËãÀàÐÍ
-    output reg AluSrc1D,//AluÊäÈëÑ¡Ôñ1
-    output reg [1:0] AluSrc2D,//AluÊäÈëÑ¡Ôñ2
-    output reg [2:0] ImmType//Ö¸ÁîµÄÁ¢¼´Êý¸ñÊ½
+    output reg MemToRegD,//ï¿½ï¿½Ê¾Ö¸ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½data memoryï¿½ï¿½È¡ï¿½ï¿½ÖµÐ´ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
+    output reg [3:0] MemWriteD,//ï¿½ï¿½ï¿½ï¿½data memoryï¿½ï¿½32bitï¿½Ö°ï¿½byteï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½
+    output reg LoadNpcD,//ï¿½ï¿½Ê¾Òªï¿½ï¿½NextPCï¿½ï¿½ï¿½ï¿½ï¿½ResultM
+    output reg [1:0] RegReadD,//ï¿½ï¿½ï¿½ï¿½forwardï¿½Ä´ï¿½ï¿½ï¿½
+    output reg [2:0] BranchTypeD,//ï¿½ï¿½Ö§ï¿½ï¿½ï¿½ï¿½
+    output reg [3:0] AluTypeD,//ALUï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    output reg AluSrc1D,//Aluï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½1
+    output reg [1:0] AluSrc2D,//Aluï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½2
+    output reg [2:0] ImmType//Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½
     );
 
  
@@ -23,17 +23,17 @@ module ControlSignal(
 
 
 	always@(*) begin
-		JalD         =  Opcode == `OP_JAL; //JalÖ¸Áîµ½´ïIDÒëÂë½×¶Î
-		JalrD        =  Opcode == `OP_JALR; //JalrÖ¸Áîµ½´ïIDÒëÂë½×¶Î
+		JalD         =  Opcode == `OP_JAL; //JalÖ¸ï¿½îµ½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½×¶ï¿½
+		JalrD        =  Opcode == `OP_JALR; //JalrÖ¸ï¿½îµ½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½×¶ï¿½
 		
 		RegWriteD    =  Opcode == `OP_Load ? Funct3 + 3'b001 : (Opcode == `OP_Store || Opcode == `OP_Branch ? `NOREGWRITE : `LW);
-		 //LoadÀàÖ¸Áî°´Funct3Ñ¡Ôñ, StoreºÍBranchÀàÖ¸ÁîÎªNOREGWRITE£¬ÆäÓàÎªLW
-		MemToRegD    =  Opcode == `OP_Load; //LoadÀàÖ¸Áîµ½´ïIDÒëÂë½×¶Î
+		 //Loadï¿½ï¿½Ö¸ï¿½î°´Funct3Ñ¡ï¿½ï¿½, Storeï¿½ï¿½Branchï¿½ï¿½Ö¸ï¿½ï¿½ÎªNOREGWRITEï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªLW
+		MemToRegD    =  Opcode == `OP_Load; //Loadï¿½ï¿½Ö¸ï¿½îµ½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½×¶ï¿½
 		MemWriteD    =  Opcode == `OP_Store ? 4'b1111 >> (3'b100 - (3'b001 << Funct3)) : 4'b0000; 
-		LoadNpcD     =  Opcode == `OP_JAL || Opcode == `OP_JALR; //Ö»ÓÐJAL»òJALRÖ¸ÁîÊ±Êä³ö1
-		RegReadD[1]  =  Opcode != `OP_LUI && Opcode != `OP_AUIPC && Opcode != `OP_JAL; //³ýÁËLUI/AUIPC/JALÕâ3ÌõÖ¸Áî£¬ÆäËû¶¼ÓÃµ½ÁË¼Ä´æÆ÷A1
-		RegReadD[0]  =  Opcode == `OP_Store || Opcode == `OP_RegReg || Opcode == `OP_Branch; //StoreÀà/RegRegÀà/BranchÀàÖ¸ÁîÓÃµ½ÁË¼Ä´æÆ÷A2
-		BranchTypeD  =  Opcode == `OP_Branch ? Funct3 - 3'b010 : `NOBRANCH; //BranchÀàÖ¸Áî°´Funct3Ï¸·Ö
+		LoadNpcD     =  Opcode == `OP_JAL || Opcode == `OP_JALR; //Ö»ï¿½ï¿½JALï¿½ï¿½JALRÖ¸ï¿½ï¿½Ê±ï¿½ï¿½ï¿½1
+		RegReadD[1]  =  Opcode != `OP_LUI && Opcode != `OP_AUIPC && Opcode != `OP_JAL; //ï¿½ï¿½ï¿½ï¿½LUI/AUIPC/JALï¿½ï¿½3ï¿½ï¿½Ö¸ï¿½î£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ë¼Ä´ï¿½ï¿½ï¿½A1
+		RegReadD[0]  =  Opcode == `OP_Store || Opcode == `OP_RegReg || Opcode == `OP_Branch; //Storeï¿½ï¿½/RegRegï¿½ï¿½/Branchï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ë¼Ä´ï¿½ï¿½ï¿½A2
+		BranchTypeD  =  Opcode == `OP_Branch ? Funct3 - 3'b010 : `NOBRANCH; //Branchï¿½ï¿½Ö¸ï¿½î°´Funct3Ï¸ï¿½ï¿½
 		AluSrc1D     =  Opcode == `OP_AUIPC; 
 		AluSrc2D[1]  =  Opcode != `OP_RegReg && Opcode != `OP_Branch && ~(Opcode == `OP_RegImm && (Funct3 == 3'b001 || Funct3 == 3'b101)); 
 		AluSrc2D[0]  =  Opcode == `OP_RegImm && (Funct3 == 3'b001 || Funct3 == 3'b101);
@@ -49,8 +49,9 @@ module ControlSignal(
 			default:    ImmType = 3'b000;
 		endcase
 		case(Opcode) 
-			`OP_RegReg: AluTypeD = {1'b0 ,Funct3} + Funct7 == 7'b0000001 ? 4'b1011 : (Funct7 == 7'b0100000 ? 4'b1000 : 4'b0000);//ºóÃæ¶ÔSUBºÍSRAÖ¸ÁîÅÐ¶Ï
-			`OP_RegImm: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0100000 && Funct3 == 3'b101 ? 4'b1000 : 4'b0000);//ºóÃæ¶ÔSRAIÖ¸ÁîÅÐ¶Ï
+		   //`OP_RegReg: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0100000 ? 4'b1000 : 4'b0000); 
+			`OP_RegReg: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0000001 ? 4'b1011 : (Funct7 == 7'b0100000 ? 4'b1000 : 4'b0000));//ï¿½ï¿½ï¿½ï¿½ï¿½SUBï¿½ï¿½SRAÖ¸ï¿½ï¿½ï¿½Ð¶ï¿½
+			`OP_RegImm: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0100000 && Funct3 == 3'b101 ? 4'b1000 : 4'b0000);//ï¿½ï¿½ï¿½ï¿½ï¿½SRAIÖ¸ï¿½ï¿½ï¿½Ð¶ï¿½
 			`OP_LUI:    AluTypeD = `LUI;
 			default:    AluTypeD = `ADD;
 		endcase

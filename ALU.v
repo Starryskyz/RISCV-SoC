@@ -1,19 +1,22 @@
 `include "Parameters.v"   
 
-//ALU½ÓÊÜÁ½¸ö²Ù×÷Êý£¬¸ù¾ÝAluTypeµÄ²»Í¬£¬½øÐÐ²»Í¬µÄ¼òµ¥Âß¼­¼ÆËã²Ù×÷£¬AluOutÎªÊä³öµÄ¼ÆËã½á¹û
+//ALUï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½AluTypeï¿½Ä²ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½Í¬ï¿½Ä¼ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½AluOutÎªï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
 module ALU(
     input wire [31:0] Operand1,
     input wire [31:0] Operand2,
     input wire [3:0] AluType,
     output reg [31:0] AluOut
-    );
+);
     
     wire [63:0] Product;
+    assign Product = Operand1 * Operand2;
+    /*
     booth_multiplier u_booth_multiplier(
     .a(Operand1),
     .b(Operand2),
     .product(Product)
-    );
+    );    
+    */
     
 	always@(*)
 		case (AluType)
@@ -26,13 +29,13 @@ module ALU(
 					if(Operand1[31] == Operand2[31]) 
 					AluOut = (Operand1 < Operand2) ? 32'b1 : 32'b0;
 					else 
-					AluOut = (Operand1[31] < Operand2[31]) ? 32'b0 : 32'b1;//ÒìºÅÇé¿ö£¬Ö±½Ó±È½Ï·ûºÅ
+					AluOut = (Operand1[31] < Operand2[31]) ? 32'b0 : 32'b1;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó±È½Ï·ï¿½ï¿½ï¿½
                   end
 			`SLTU: AluOut = (Operand1 < Operand2) ? 32'b1 : 32'b0;
 			`SLL: AluOut = Operand1 << Operand2[4:0];
 			`SRL: AluOut = Operand1 >> Operand2[4:0];
 			`SRA: AluOut = $signed(Operand1) >>> Operand2[4:0];
-			//Ê¹ÓÃ>>>ÎªËãÊõÓÒÒÆ£¬¸ßÎ»²¹·ûºÅ£¬ÎÞ·ûºÅÊýÒ²ÈÔÊÇÂß¼­ÓÒÒÆ
+			//Ê¹ï¿½ï¿½>>>Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½Å£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½
 			`LUI: AluOut = Operand2;
 			`MUL: AluOut = Product[31:0];
 			`MULH: AluOut = Product[63:32];

@@ -1,15 +1,16 @@
 module riscv_kernel#(
-    parameter AddressWidth_imem = 32'd30,//32'd6,
-    parameter AddressWidth_dmem = 32'd30,//32'd5,
+    parameter AddressWidth_imem = 32'd6,//,32'd30
+    parameter AddressWidth_dmem = 32'd5,//32'd30,
+    parameter imem_size = 32'd40,
     parameter DataWidth = 32'd32
 )
 (
-    input clk,
-    input rst,
-    //input ap_start,
-    //input ap_done,
-    //input ap_idle,
-    //input ap_ready,
+    input ap_clk,
+    input ap_rst,
+    input ap_start,
+    output ap_done,
+    output ap_idle,
+    //output ap_ready,
     output [AddressWidth_imem-1:0] imem_address0,
     output imem_ce0,
     input [DataWidth-1:0] imem_q0,
@@ -21,7 +22,6 @@ module riscv_kernel#(
 
     );
 
-    //wire clk;
     wire StallF, FlushF, StallD, FlushD, StallE, FlushE, StallM, FlushM, StallW, FlushW;
     wire [31:0] PC_In;
     wire [31:0] PC_IF;
@@ -83,13 +83,11 @@ module riscv_kernel#(
     wire [1:0] Forward1E;
     wire [1:0] Forward2E;
     wire [1:0] LoadedBytesSelect;
-/*
-    Crossover(
-    .clk_in(clk_in),
-    .clk_out(clk)
-    );
-*/
 
+
+
+    wire clk = ap_clk;
+    wire rst = ap_rst || ap_start;
 
 
 //-------------------IF��-----------------------//
@@ -347,4 +345,26 @@ module riscv_kernel#(
         .Forward1E(Forward1E),
         .Forward2E(Forward2E)
     	);    
+    	
+    wire kernel_done = PC_In[(AddressWidth_imem+1):2] == (imem_size);
+    reg kernel_done_reg;
+    reg kernel_idle_reg;
+    /*
+    always @(posedge clk) begin
+        if(rst)
+            kernel_done_reg <= 1'b0;
+         else 
+            kernel_done_reg <= kernel_done;
+    end
+    */
+    always @(posedge clk) begin
+        if(rst)
+            kernel_idle_reg <= 1'b0;
+         else if(PC_In[(AddressWidth_imem+1):2] == (imem_size-1))
+            kernel_idle_reg <= 1'b1;
+         else 
+            kernel_idle_reg <= kernel_idle_reg;        
+    end
+    assign ap_done =  kernel_done ;
+    assign ap_idle =  kernel_idle_reg;
 endmodule
