@@ -1,18 +1,27 @@
 
-//32¸ö32Î»Í¨ÓÃ¼Ä´æÆ÷×é,Òì²½¶Á£¬ÏÂ½µÑØÍ¬²½Ð´Èë
+//32ï¿½ï¿½32Î»Í¨ï¿½Ã¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ì²½ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½Ð´ï¿½ï¿½
 module RegisterFile(
     input wire clk,
     input wire rst,
-    input wire [4:0] Address1,//A1¼Ä´æÆ÷µØÖ·
-    input wire [4:0] Address2,//A2¼Ä´æÆ÷µØÖ·
-    input wire [4:0] Address3,//A3¼Ä´æÆ÷µØÖ·
-    input wire RegWriteEN3,//A3¼Ä´æÆ÷Ð´Ê¹ÄÜ
-    input wire [31:0] RegDataW3,//A3¼Ä´æÆ÷Ð´Êý¾Ý
-    output wire [31:0] RegDataR1,//A1¼Ä´æÆ÷¶ÁÊý¾Ý
-    output wire [31:0] RegDataR2//A2¼Ä´æÆ÷¶ÁÊý¾Ý
+    input wire [4:0] Address1,//A1ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+    input wire [4:0] Address2,//A2ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+    input wire [4:0] Address3,//A3ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+    input wire RegWriteEN3,//A3ï¿½Ä´ï¿½ï¿½ï¿½Ð´Ê¹ï¿½ï¿½
+    input wire [31:0] RegDataW3,//A3ï¿½Ä´ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½
+    output wire [31:0] RegDataR1,//A1ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    output wire [31:0] RegDataR2//A2ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     );
-    reg [31:0] RegFile[31:1];
+    reg [31:0] RegFile[31:0];
     integer i;
+    //x0
+    always@(negedge clk or posedge rst) 
+    begin
+        if(rst)
+            RegFile[0] <= 32'b0;
+        else 
+            RegFile[0] <= 32'b0;
+    end
+    
     always@(negedge clk or posedge rst) 
     begin 
         if(rst)
