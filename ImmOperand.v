@@ -1,9 +1,9 @@
 `include "Parameters.v"  
-//¶Ôµ±Ç°Ö¸ÁîÖÐÁ¢¼´ÊýÆ´½Ó£¬²¢ÊµÏÖÎ»ÊýÀ©Õ¹ 
+//ï¿½Ôµï¿½Ç°Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ´ï¿½Ó£ï¿½ï¿½ï¿½Êµï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½Õ¹ 
 module ImmOperand(
-    input wire [31:7] Instpart,//Ö¸Áî³ý²Ù×÷ÂëÒÔÍâµÄ²¿·Ö
-    input wire [2:0] ImmType,//Á¢¼´Êý±àÂëÀàÐÍ
-    output reg [31:0] Out//½á¹û
+    input wire [31:7] Instpart,//Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
+    input wire [2:0] ImmType,//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    output reg [31:0] Out//ï¿½ï¿½ï¿½
     );
 	always@(*)
 	begin
@@ -13,7 +13,7 @@ module ImmOperand(
 			`BTYPE: Out <= { {20{Instpart[31]}}, Instpart[7], Instpart[30:25], Instpart[11:8], 1'b0 };
 			`UTYPE: Out <= { Instpart[31:12], {12{1'b0}} };
 			`JTYPE: Out <= { {12{Instpart[31]}}, Instpart[19:12], Instpart[20], Instpart[30:21], 1'b0 };
-			default: Out <= 32'hx;
+			default: Out <= 32'h0;
 		endcase
 	end
 endmodule
