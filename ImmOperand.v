@@ -1,12 +1,12 @@
 `include "Parameters.v"  
-//�Ե�ǰָ����������ƴ�ӣ���ʵ��λ����չ 
+
 module ImmOperand(
-    input wire [31:7] Instpart,//ָ�������������Ĳ���
-    input wire [2:0] ImmType,//��������������
-    output reg [31:0] Out//���
-    );
-	always@(*)
-	begin
+    input [31:7] Instpart,
+    input [2:0] ImmType,
+    output reg [31:0] Out
+);
+
+	always@(*) begin
 		case(ImmType)
 			`ITYPE: Out <= { {21{Instpart[31]}}, Instpart[30:20] };
 			`STYPE: Out <= { {21{Instpart[31]}}, Instpart[30:25], Instpart[11:7] };
@@ -16,4 +16,5 @@ module ImmOperand(
 			default: Out <= 32'h0;
 		endcase
 	end
+	
 endmodule

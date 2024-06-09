@@ -10,7 +10,7 @@ module riscv_kernel#(
     input ap_start,
     output ap_done,
     output ap_idle,
-    //output ap_ready,
+    output ap_ready,
     output [AddressWidth_imem-1:0] imem_address0,
     output imem_ce0,
     input [DataWidth-1:0] imem_q0,
@@ -19,8 +19,7 @@ module riscv_kernel#(
     output dmem_we0,
     output [DataWidth-1:0] dmem_d0,
     input [DataWidth-1:0] dmem_q0
-
-    );
+);
 
     wire StallF, FlushF, StallD, FlushD, StallE, FlushE, StallM, FlushM, StallW, FlushW;
     wire [31:0] PC_In;
@@ -90,12 +89,11 @@ module riscv_kernel#(
     wire rst = ap_rst || ap_start;
 
 
-//-------------------IF��-----------------------//
-    PC_Generator PC_Generator(
+//-------------------IF-----------------------//
+    PCGenerator PCGenerator(
         .clk(clk),
-        .rst(FlushF),
+        .clear(FlushF),
         .en(~StallF),
-        //.PC_IF(PC_IF),
         .PC_IF(PC_In),
         .JalrTarget(AluOutE),  
         .JalTarget(JalNPC),
@@ -105,39 +103,25 @@ module riscv_kernel#(
         .JalrE(JalrE),
         .PC_Out(PC_In)
     );
-    /*
-    IF_reg IF_reg(
-        .clk(clk),
-        .en(~StallF),
-        .clear(FlushF), 
-        .PC_In(PC_In),
-        .PC_IF(PC_IF)
-    );
-    */
+
     wire [31:0] DataInstF;
-    /*
-    InstructionROM InstructionROM(
-         .clk(clk),    
-         .addr(PC_IF),      
-         .dout(DataInstF)
-     );*/
-    //assign imem_address0 = PC_IF[7:2];
+
     assign imem_address0 = PC_In[(AddressWidth_imem+1):2];
     assign imem_ce0 = 1'b1;
     assign DataInstF = imem_q0;
     
-//-------------------ID��-----------------------//        
-    ID_reg ID_reg(
+       
+    IFIDreg IFIDreg(
         .clk(clk),
         .en(~StallD),
         .clear(FlushD),
         .DataInstF(DataInstF),
         .DataInstD(Inst),
-        //.PC_IF(PC_IF),
         .PC_IF(PC_In),
         .PC_ID(PC_ID) 
     );
-    
+//-------------------ID-----------------------//     
+
     assign {Funct7D, Rs2D, Rs1D, Funct3D, RdD, OpcodeD} = Inst;
     assign JalNPC=ImmD+PC_ID;
             
@@ -175,9 +159,9 @@ module riscv_kernel#(
         .RegDataR2(RegOut2D)
     );
     
-//-------------------EX��-----------------------//      
     
-    EX_reg EX_reg(
+    
+    IDEXreg IDEXreg(
         .clk(clk),
         .en(~StallE),
         .clear(FlushE),
@@ -219,6 +203,8 @@ module riscv_kernel#(
         .AluSrc2E(AluSrc2E)
     	); 
 
+//-------------------EX-----------------------//  
+
     assign ForwardData1 = Forward1E[1] ? (AluOutM) : ( Forward1E[0] ? RegWriteData : RegOut1E );
     assign Operand1 = AluSrc1E ? PC_EX : ForwardData1;
     assign ForwardData2 = Forward2E[1] ? (AluOutM) : ( Forward2E[0] ? RegWriteData : RegOut2E );
@@ -237,8 +223,8 @@ module riscv_kernel#(
         .BranchJump(BranchE)
         );
         
-//-------------------MEM��-----------------------//          
-    MEM_reg MEM_reg(
+     
+    EXMEMreg EXMEMreg(
         .clk(clk),
         .en(~StallM),
         .clear(FlushM),
@@ -259,22 +245,15 @@ module riscv_kernel#(
         .LoadNpcE(LoadNpcE),
         .LoadNpcM(LoadNpcM)
     );
+
+//-------------------MEM-----------------------//     
     assign ResultM = LoadNpcM ? (PC_MEM+4) : AluOutM;
     wire [31:0] RamData_raw;
     wire [31:0] din;
     wire [3:0] WriteEN;
     assign din = StoreDataM << ({3'b000, AluOutM[1:0]} << 3'd3);
     assign WriteEN = MemWriteM << AluOutM[1:0];
-    /*
-    DataRAM DataRAM(
-        .clk(clk),                      
-        .rst(rst),
-        .WriteEN(WriteEN),                      
-        .addr(AluOutM),                      
-        .din(din),                      
-        .dout(RamData_raw),
 
-    );*/ 
     wire [31:0] d0;
     assign d0[31:24] = WriteEN[3] ? din[31:24] : 8'b0;
     assign d0[23:16] = WriteEN[2] ? din[23:16] : 8'b0;
@@ -286,9 +265,9 @@ module riscv_kernel#(
     assign dmem_d0 = d0;
     assign RamData_raw = dmem_q0;
     
-//-------------------WB��-----------------------//      
+//-------------------WB-----------------------//      
      
-    WB_reg WB_reg(
+    MEMWBreg MEMWBreg(
         .clk(clk),
         .en(~StallW),
         .clear(FlushW),
@@ -312,10 +291,8 @@ module riscv_kernel#(
         .RegWriteW(RegWriteW),
         .dout(RamDataW_Ext)
     );
-    assign RegWriteData = ~MemToRegW?ResultW:RamDataW_Ext;
+    assign RegWriteData = ~MemToRegW ? ResultW : RamDataW_Ext;
     
-    
-//-------------------ð�մ���-----------------------//    
     HazardSolving HazardSolving(
         .rst(rst),
         .BranchE(BranchE),
@@ -349,14 +326,7 @@ module riscv_kernel#(
     wire kernel_done = PC_In[(AddressWidth_imem+1):2] == (imem_size);
     reg kernel_done_reg;
     reg kernel_idle_reg;
-    /*
-    always @(posedge clk) begin
-        if(rst)
-            kernel_done_reg <= 1'b0;
-         else 
-            kernel_done_reg <= kernel_done;
-    end
-    */
+
     always @(posedge clk) begin
         if(rst)
             kernel_idle_reg <= 1'b0;
@@ -367,4 +337,6 @@ module riscv_kernel#(
     end
     assign ap_done =  kernel_done ;
     assign ap_idle =  kernel_idle_reg;
+
+    
 endmodule

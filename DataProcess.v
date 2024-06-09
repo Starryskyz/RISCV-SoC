@@ -1,27 +1,28 @@
 `include "Parameters.v"   
-//DataExt是用来处理非字对齐load的情形，同时根据load的不同模式对Data Mem中load的数进行符号或者无符号拓展
+
 module DataProcess(
-    input wire [31:0] din,
-    input wire [1:0] LoadedBytesSelect,
-    input wire [2:0] RegWriteW,
+    input [31:0] din,
+    input [1:0] LoadedBytesSelect,
+    input [2:0] RegWriteW,
     output reg [31:0] dout
-    );    
-	always@(*) 
+);    
+
+	always@(*) begin
 		case(RegWriteW)
-			`NOREGWRITE: dout = 32'hxxxxxxxx;
+			`NOREGWRITE: dout = 32'h00000000;
 			`LB: 
 				case(LoadedBytesSelect)
 					2'b00: dout = {{24{din[7]}}, din[7:0]};
 					2'b01: dout = {{24{din[15]}}, din[15:8]};
 					2'b10: dout = {{24{din[23]}}, din[23:16]};
 					2'b11: dout = {{24{din[31]}}, din[31:24]};
-					default: dout = 32'hxxxxxxxx;
+					default: dout = 32'h00000000;
 				endcase
 			`LH:
 				case(LoadedBytesSelect)
 					2'b00: dout = {{16{din[15]}}, din[15:0]};
 					2'b10: dout = {{16{din[31]}}, din[31:16]};
-					default: dout = 32'hxxxxxxxx;
+					default: dout = 32'h00000000;
 				endcase
 			`LW:
 				dout = din;
@@ -31,14 +32,17 @@ module DataProcess(
 					2'b01: dout = {{24{1'b0}}, din[15:8]};
 					2'b10: dout = {{24{1'b0}}, din[23:16]};
 					2'b11: dout = {{24{1'b0}}, din[31:24]};
-					default: dout = 32'hxxxxxxxx;
+					default: dout = 32'h00000000;
 				endcase
 			`LHU:
 				case(LoadedBytesSelect)
 					2'b00: dout = {{16{1'b0}}, din[15:0]};
 					2'b10: dout = {{16{1'b0}}, din[31:16]};
-					default: dout = 32'hxxxxxxxx;
+					default: dout = 32'h00000000;
 				endcase
-			default: dout = 32'hxxxxxxxx;
+			default: dout = 32'h00000000;
 		endcase
+	end
+
+
 endmodule

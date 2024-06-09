@@ -1,35 +1,33 @@
+//negedge
 
-//32��32λͨ�üĴ�����,�첽�����½���ͬ��д��
 module RegisterFile(
-    input wire clk,
-    input wire rst,
-    input wire [4:0] Address1,//A1�Ĵ�����ַ
-    input wire [4:0] Address2,//A2�Ĵ�����ַ
-    input wire [4:0] Address3,//A3�Ĵ�����ַ
-    input wire RegWriteEN3,//A3�Ĵ���дʹ��
-    input wire [31:0] RegDataW3,//A3�Ĵ���д����
-    output wire [31:0] RegDataR1,//A1�Ĵ���������
-    output wire [31:0] RegDataR2//A2�Ĵ���������
-    );
+    input clk,
+    input rst,
+    input [4:0] Address1,
+    input [4:0] Address2,
+    input [4:0] Address3,
+    input RegWriteEN3,
+    input [31:0] RegDataW3,
+    output wire [31:0] RegDataR1,
+    output wire [31:0] RegDataR2
+);
     reg [31:0] RegFile[31:0];
     integer i;
-    //x0
-    always@(negedge clk or posedge rst) 
-    begin
+    //x0 is always 0
+    always@(negedge clk or posedge rst) begin
         if(rst)
             RegFile[0] <= 32'b0;
         else 
             RegFile[0] <= 32'b0;
     end
     
-    always@(negedge clk or posedge rst) 
-    begin 
+    always@(negedge clk or posedge rst) begin 
         if(rst)
             for( i=1; i<32; i=i+1) 
-            RegFile[i][31:0] <= 32'b0;
+                RegFile[i][31:0] <= 32'b0;
         else if( (RegWriteEN3 == 1'b1) && (Address3 != 5'b0) )
             RegFile[Address3] <= RegDataW3;
-            else
+        else
             RegFile[Address3] <= RegFile[Address3];   
     end
  

@@ -1,39 +1,37 @@
 `include "Parameters.v"  
-//ָ������
-module ControlSignal(
-    input wire [6:0] Opcode,//ָ��Ĳ����벿��
-    input wire [2:0] Funct3,//ָ���funct3����
-    input wire [6:0] Funct7,//ָ���funct7����
-    output reg JalD,//Ϊ1��ʾ��ǰ����Ϊjalָ��
-    output reg JalrD,//Ϊ1��ʾ��ǰ����Ϊjalrָ��
-    output reg [2:0] RegWriteD,
-    output reg MemToRegD,//��ʾָ����Ҫ��data memory��ȡ��ֵд��Ĵ���
-    output reg [3:0] MemWriteD,//����data memory��32bit�ְ�byte����д��
-    output reg LoadNpcD,//��ʾҪ��NextPC�����ResultM
-    output reg [1:0] RegReadD,//����forward�Ĵ���
-    output reg [2:0] BranchTypeD,//��֧����
-    output reg [3:0] AluTypeD,//ALU��������
-    output reg AluSrc1D,//Alu����ѡ��1
-    output reg [1:0] AluSrc2D,//Alu����ѡ��2
-    output reg [2:0] ImmType//ָ�����������ʽ
-    );
 
- 
-    // LoadNpcD==1      
+module ControlSignal(
+    input [6:0] Opcode,
+    input [2:0] Funct3,
+    input [6:0] Funct7,
+    output reg JalD,//jal
+    output reg JalrD,//jalr
+    output reg [2:0] RegWriteD,
+    output reg MemToRegD,//read dmem, write to regfile
+    output reg [3:0] MemWriteD,//32bit,write by byte
+    output reg LoadNpcD,//Result = ResultM
+    output reg [1:0] RegReadD,//used in forward
+    output reg [2:0] BranchTypeD,//Branch type
+    output reg [3:0] AluTypeD,//ALU operation type
+    output reg AluSrc1D,//Alu input select 1
+    output reg [1:0] AluSrc2D,//Alu input select 2
+    output reg [2:0] ImmType//Imm type
+);
+
 
 
 	always@(*) begin
-		JalD         =  Opcode == `OP_JAL; //Jalָ���ID����׶�
-		JalrD        =  Opcode == `OP_JALR; //Jalrָ���ID����׶�
+		JalD         =  Opcode == `OP_JAL; //Jal in ID stage
+		JalrD        =  Opcode == `OP_JALR; //Jalr in ID stage
 		
 		RegWriteD    =  Opcode == `OP_Load ? Funct3 + 3'b001 : (Opcode == `OP_Store || Opcode == `OP_Branch ? `NOREGWRITE : `LW);
-		 //Load��ָ�Funct3ѡ��, Store��Branch��ָ��ΪNOREGWRITE������ΪLW
-		MemToRegD    =  Opcode == `OP_Load; //Load��ָ���ID����׶�
+		//load according to funct3, store and branch no write back, else LW
+		MemToRegD    =  Opcode == `OP_Load; //Load instruction in ID stage
 		MemWriteD    =  Opcode == `OP_Store ? 4'b1111 >> (3'b100 - (3'b001 << Funct3)) : 4'b0000; 
-		LoadNpcD     =  Opcode == `OP_JAL || Opcode == `OP_JALR; //ֻ��JAL��JALRָ��ʱ���1
-		RegReadD[1]  =  Opcode != `OP_LUI && Opcode != `OP_AUIPC && Opcode != `OP_JAL; //����LUI/AUIPC/JAL��3��ָ��������õ��˼Ĵ���A1
-		RegReadD[0]  =  Opcode == `OP_Store || Opcode == `OP_RegReg || Opcode == `OP_Branch; //Store��/RegReg��/Branch��ָ���õ��˼Ĵ���A2
-		BranchTypeD  =  Opcode == `OP_Branch ? Funct3 - 3'b010 : `NOBRANCH; //Branch��ָ�Funct3ϸ��
+		LoadNpcD     =  Opcode == `OP_JAL || Opcode == `OP_JALR; //PC update to new PC
+		RegReadD[1]  =  Opcode != `OP_LUI && Opcode != `OP_AUIPC && Opcode != `OP_JAL; //A1 is not used in LUI, AUIPC, JAL but used in all others
+		RegReadD[0]  =  Opcode == `OP_Store || Opcode == `OP_RegReg || Opcode == `OP_Branch; //A2 is only used in store, reg-reg, branch
+		BranchTypeD  =  Opcode == `OP_Branch ? Funct3 - 3'b010 : `NOBRANCH; //Branch type according to funct3
 		AluSrc1D     =  Opcode == `OP_AUIPC; 
 		AluSrc2D[1]  =  Opcode != `OP_RegReg && Opcode != `OP_Branch && ~(Opcode == `OP_RegImm && (Funct3 == 3'b001 || Funct3 == 3'b101)); 
 		AluSrc2D[0]  =  Opcode == `OP_RegImm && (Funct3 == 3'b001 || Funct3 == 3'b101);
@@ -49,9 +47,8 @@ module ControlSignal(
 			default:    ImmType = 3'b000;
 		endcase
 		case(Opcode) 
-		   //`OP_RegReg: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0100000 ? 4'b1000 : 4'b0000); 
-			`OP_RegReg: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0000001 ? 4'b1011 : (Funct7 == 7'b0100000 ? 4'b1000 : 4'b0000));//�����SUB��SRAָ���ж�
-			`OP_RegImm: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0100000 && Funct3 == 3'b101 ? 4'b1000 : 4'b0000);//�����SRAIָ���ж�
+			`OP_RegReg: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0000001 ? 4'b1011 : (Funct7 == 7'b0100000 ? 4'b1000 : 4'b0000));
+			`OP_RegImm: AluTypeD = {1'b0 ,Funct3} + (Funct7 == 7'b0100000 && Funct3 == 3'b101 ? 4'b1000 : 4'b0000);
 			`OP_LUI:    AluTypeD = `LUI;
 			default:    AluTypeD = `ADD;
 		endcase

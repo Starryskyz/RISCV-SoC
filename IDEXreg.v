@@ -1,25 +1,25 @@
-module EX_reg(
-    input wire clk,
-    input wire en,
-    input wire clear,
-    input wire [31:0] PC_ID,     
-    input wire [31:0] JalNPC,    
-    input wire [31:0] ImmD,    
-    input wire [4:0] RdD,    
-    input wire [4:0] Rs1D,    
-    input wire [4:0] Rs2D,   
-    input wire [31:0] RegOut1D,   
-    input wire [31:0] RegOut2D,   
-    input wire JalrD,
-    input wire [2:0] RegWriteD,
-    input wire MemToRegD,
-    input wire [3:0] MemWriteD,
-    input wire LoadNpcD,
-    input wire [1:0] RegReadD,    
-    input wire [2:0] BranchTypeD,   
-    input wire [3:0] AluTypeD,
-    input wire AluSrc1D,
-    input wire [1:0] AluSrc2D,
+module IDEXreg(
+    input clk,
+    input en,
+    input clear,
+    input [31:0] PC_ID,     
+    input [31:0] JalNPC,    
+    input [31:0] ImmD,    
+    input [4:0] RdD,    
+    input [4:0] Rs1D,    
+    input [4:0] Rs2D,   
+    input [31:0] RegOut1D,   
+    input [31:0] RegOut2D,   
+    input JalrD,
+    input [2:0] RegWriteD,
+    input MemToRegD,
+    input [3:0] MemWriteD,
+    input LoadNpcD,
+    input [1:0] RegReadD,    
+    input [2:0] BranchTypeD,   
+    input [3:0] AluTypeD,
+    input AluSrc1D,
+    input [1:0] AluSrc2D,
     
     output reg [31:0] PC_EX,
     output reg [31:0] BrNPC, 
@@ -39,14 +39,12 @@ module EX_reg(
     output reg [3:0] AluTypeE,
     output reg AluSrc1E,
     output reg [1:0] AluSrc2E
-    );
+);
 
 
-    always@(posedge clk)
-    begin
+    always@(posedge clk) begin
         if(en)
-            if(clear)
-                begin
+            if(clear) begin
                 PC_EX <= 32'b0; 
                 BrNPC <= 32'b0; 
                 ImmE <= 32'b0;
@@ -66,8 +64,7 @@ module EX_reg(
                 AluSrc1E <= 1'b0; 
                 AluSrc2E <= 2'b0;     
             end 
-            else 
-            begin
+            else begin
                 PC_EX <= PC_ID; 
                 BrNPC <= JalNPC; 
                 ImmE <= ImmD;
@@ -87,8 +84,7 @@ module EX_reg(
                 AluSrc1E <= AluSrc1D;
                 AluSrc2E <= AluSrc2D;         
             end
-        else
-        begin
+        else begin
             PC_EX <= PC_EX; 
             BrNPC <= BrNPC; 
             ImmE <= ImmE;
@@ -108,6 +104,6 @@ module EX_reg(
             AluSrc1E <= AluSrc1E;
             AluSrc2E <= AluSrc2E;
         end      
-        end
+    end
     
 endmodule
