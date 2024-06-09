@@ -1,6 +1,7 @@
 
 module HazardSolving(
     input rst,
+	input start,
     input BranchE, 
 	input JalrE,
 	input JalD, 
@@ -26,11 +27,11 @@ module HazardSolving(
 		FlushE <= rst || (MemToRegE && (RdE == Rs1D || RdE == Rs2D)) || (BranchE || JalrE);
 		FlushM <= rst;
 		FlushW <= rst;
-		StallF <= ~rst && (MemToRegE && (RdE == Rs1D || RdE == Rs2D));
-		StallD <= ~rst && (MemToRegE && (RdE == Rs1D || RdE == Rs2D));
-		StallE <= 1'b0;
-		StallM <= 1'b0;
-		StallW <= 1'b0;
+		StallF <= (~rst && (MemToRegE && (RdE == Rs1D || RdE == Rs2D))) || (~rst &&~start);//|| (~start);
+		StallD <= (~rst && (MemToRegE && (RdE == Rs1D || RdE == Rs2D))) || (~rst &&~start);//|| ~start;
+		StallE <= ~start;//1'b0;
+		StallM <= ~start;//1'b0;
+		StallW <= ~start;//1'b0;
 	end
 
 

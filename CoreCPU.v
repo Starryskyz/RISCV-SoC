@@ -86,7 +86,7 @@ module riscv_kernel#(
 
 
     wire clk = ap_clk;
-    wire rst = ap_rst || ap_start;
+    wire rst = ap_rst; //|| ap_start;
 
 
 //-------------------IF-----------------------//
@@ -295,6 +295,7 @@ module riscv_kernel#(
     
     HazardSolving HazardSolving(
         .rst(rst),
+        .start(kernel_start_reg),
         .BranchE(BranchE),
         .JalrE(JalrE),
         .JalD(JalD),
@@ -326,6 +327,7 @@ module riscv_kernel#(
     wire kernel_done = PC_In[(AddressWidth_imem+1):2] == (imem_size);
     reg kernel_done_reg;
     reg kernel_idle_reg;
+    reg kernel_start_reg;
 
     always @(posedge clk) begin
         if(rst)
@@ -335,8 +337,18 @@ module riscv_kernel#(
          else 
             kernel_idle_reg <= kernel_idle_reg;        
     end
+
+    always @(negedge clk) begin
+        if(rst)
+            kernel_start_reg <= 1'b0;
+        else if(ap_start)
+            kernel_start_reg <= 1'b1;
+        else
+            kernel_start_reg <= kernel_start_reg;
+    end
+
     assign ap_done =  kernel_done ;
     assign ap_idle =  kernel_idle_reg;
 
-    
+
 endmodule
