@@ -27,8 +27,8 @@ module HazardSolving(
 		FlushE <= rst || (MemToRegE && (RdE == Rs1D || RdE == Rs2D)) || (BranchE || JalrE);
 		FlushM <= rst;
 		FlushW <= rst;
-		StallF <= (~rst && (MemToRegE && (RdE == Rs1D || RdE == Rs2D))) || (~rst &&~start);//|| (~start);
-		StallD <= (~rst && (MemToRegE && (RdE == Rs1D || RdE == Rs2D))) || (~rst &&~start);//|| ~start;
+		StallF <= (~rst && (MemToRegE && (RdE == Rs1D || RdE == Rs2D))) || (~rst && ~start);
+		StallD <= (~rst && (MemToRegE && (RdE == Rs1D || RdE == Rs2D))) || (~rst && ~start);
 		StallE <= ~start;//1'b0;
 		StallM <= ~start;//1'b0;
 		StallW <= ~start;//1'b0;

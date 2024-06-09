@@ -338,7 +338,7 @@ module riscv_kernel#(
             kernel_idle_reg <= kernel_idle_reg;        
     end
 
-    always @(negedge clk) begin
+    always @(posedge clk) begin
         if(rst)
             kernel_start_reg <= 1'b0;
         else if(ap_start)
