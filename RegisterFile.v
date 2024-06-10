@@ -14,16 +14,11 @@ module RegisterFile(
     reg [31:0] RegFile[31:0];
     integer i;
     //x0 is always 0
-    always@(negedge clk or posedge rst) begin
-        if(rst)
-            RegFile[0] <= 32'b0;
-        else 
-            RegFile[0] <= 32'b0;
-    end
+
     
     always@(negedge clk or posedge rst) begin 
         if(rst)
-            for( i=1; i<32; i=i+1) 
+            for( i=0; i<32; i=i+1) 
                 RegFile[i][31:0] <= 32'b0;
         else if( (RegWriteEN3 == 1'b1) && (Address3 != 5'b0) )
             RegFile[Address3] <= RegDataW3;
