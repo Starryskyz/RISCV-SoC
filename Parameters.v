@@ -2,15 +2,16 @@
 `define CONST_VALUES
 
 //OPcode[6:0]
-    `define OP_JAL    7'b1101111 //JAL�Ĳ�����
-    `define OP_JALR   7'b1100111 //JALR�Ĳ�����
-    `define OP_Load   7'b0000011 //Load��ָ��Ĳ�����
-    `define OP_Store  7'b0100011 //Store��ָ��Ĳ�����
-    `define OP_Branch 7'b1100011 //Branch��ָ��Ĳ�����
-    `define OP_LUI    7'b0110111 //LUI�Ĳ�����
-    `define OP_AUIPC  7'b0010111 //AUIPC�Ĳ�����
-    `define OP_RegReg 7'b0110011 //�Ĵ���-�Ĵ�������ָ��Ĳ�����
-    `define OP_RegImm 7'b0010011 //�Ĵ���-����������ָ��Ĳ�����
+    `define OP_JAL    7'b1101111 
+    `define OP_JALR   7'b1100111 
+    `define OP_Load   7'b0000011
+    `define OP_Store  7'b0100011
+    `define OP_Branch 7'b1100011
+    `define OP_LUI    7'b0110111
+    `define OP_AUIPC  7'b0010111
+    `define OP_RegReg 7'b0110011
+    `define OP_RegImm 7'b0010011
+    `define OP_Vec 7'b1000011
 
 //ALUContrl[3:0]
     `define ADD  4'b0000
@@ -28,6 +29,12 @@
     `define MULH  4'b1100
     `define MULHSU  4'b1100
     `define MULHU  4'b1100
+
+//VectorType    
+    `define VM 4'b1111
+    `define VL 4'b1001
+    `define VS 4'b1101
+    
 //BranchType[2:0]
     `define NOBRANCH  3'b000
     `define BEQ  3'b110
