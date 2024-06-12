@@ -54,8 +54,8 @@ module RegisterFile(
             
         else if( (RegWriteEN3 == 1'b1) && (Address3 != 5'b0) )
             RegFile[Address3] <= RegDataW3;
-        else
-            RegFile[Address3] <= RegFile[Address3];   
+        //else
+            //RegFile[Address3] <= RegFile[Address3];   
     end
  
     assign RegDataR1 = (Address1==5'b0) ? 32'b0 : RegFile[Address1];
