@@ -90,7 +90,7 @@ module riscv_kernel #(
   wire [1:0] Forward1E;
   wire [1:0] Forward2E;
   wire [1:0] LoadedBytesSelect;
-
+  wire [31:0] AluToPC;
 
 
   wire clk = ap_clk;
@@ -103,7 +103,7 @@ module riscv_kernel #(
       .clear(FlushF),
       .en(~StallF),
       .PC_IF(PC_In),
-      .JalrTarget(AluOutE),
+      .JalrTarget(AluToPC),
       .JalTarget(JalNPC),
       .BranchTarget(BrNPC),
       .BranchE(BranchE),
@@ -258,7 +258,8 @@ module riscv_kernel #(
       .Operand1(Operand1),
       .Operand2(Operand2),
       .AluType (AluTypeE),
-      .AluOut  (AluOutE)
+      .AluOut  (AluOutE),
+      .AluToPC (AluToPC)
   );
   BranchDecision BranchDecision (
       .BranchType(BranchTypeE),
